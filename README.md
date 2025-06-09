@@ -1,20 +1,22 @@
 # Toradex-Yocto-Builder
 
-This repository contains a Docker container recipe for building a system image for Toradex devices. The resulting image includes various useful tools and configurations to aid development and deployment on Toradex platforms.
+This repository provides a Dockerfile and a set of ready-to-use commands to simplify building Yocto-based system images for Toradex devices. The container includes essential tools and configurations to streamline the build process on different development environments.
 
-⚠️ This is a personal project and is not officially affiliated with or endorsed by Toradex.
+---
 
-Included in the image:
-Cross-compilation tools tailored for Toradex
+⚠️ **This is a personal project and is not officially affiliated with or endorsed by Toradex.**
 
-Basic dependencies and libraries for the target system
+---
 
-Automated scripts for building, deployment, and debugging
+## What’s included
 
-Optimized environment settings for embedded development
+- Dockerfile to build a container with all necessary Yocto dependencies  
+- Predefined commands to run Yocto builds for Toradex images  
+- Cross-compilation tools and libraries tailored for Toradex  
+- Scripts and environment settings to facilitate image creation  
 
-Support for communication and integration with Toradex hardware
+---
 
-Purpose:
-To provide a consistent, isolated, and reproducible environment for building and maintaining system images for Toradex devices, minimizing differences between development machines.
+## Purpose
 
+To provide an easy-to-use, consistent, and reproducible Docker environment that helps developers build Yocto images for Toradex devices without worrying about host system differences.
