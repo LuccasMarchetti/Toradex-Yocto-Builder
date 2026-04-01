@@ -22,7 +22,7 @@ ENV LC_ALL=en_US.UTF-8
 # Instala dependências principais para Yocto build
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio \
-    python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping \
+    nano python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping \
     python3-git python3-jinja2 python3-subunit zstd liblz4-tool file libacl1 \
     make inkscape \
     && rm -rf /var/lib/apt/lists/*
@@ -37,9 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl openssh-client gpg gnupg-agent \
     && rm -rf /var/lib/apt/lists/*
 
-# Cria usuário normal e diretórios necessários
+# Cria usuário normal e diretório base (apenas o ponto de montagem)
 RUN useradd -m builder && \
-    mkdir -p /oe-core/build && \
+    mkdir -p /oe-core && \
     chown -R builder:builder /oe-core
 
 USER builder
@@ -47,20 +47,20 @@ USER builder
 # Instala o repo manualmente no ~/bin do builder
 RUN mkdir -p /home/builder/bin && \
     curl https://commondatastorage.googleapis.com/git-repo-downloads/repo -o /home/builder/bin/repo && \
-    chmod a+x /home/builder/bin/repo
+    chmod a+x /home/builder/bin/repo && \
+    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
 
+# Aplica o PATH em todas as camadas seguintes
 ENV PATH="/home/builder/bin:${PATH}"
 
 WORKDIR /oe-core
 
-# Configura git e inicializa o repo sem prompts interativos e com cores habilitadas
+# Configura apenas o Git (sem baixar o código do Yocto aqui)
 RUN if [ -z "${GIT_USER_NAME}" ] || [ -z "${GIT_USER_EMAIL}" ]; then \
       echo "GIT_USER_NAME e GIT_USER_EMAIL devem ser definidos!"; exit 1; \
     fi && \
     git config --global user.name "${GIT_USER_NAME}" && \
     git config --global user.email "${GIT_USER_EMAIL}" && \
-    git config --global color.ui true && \
-    repo init -u git://git.toradex.com/toradex-manifest.git -b scarthgap-7.x.y -m tdxref/default.xml --config-name && \
-    repo sync -j$(nproc)
+    git config --global color.ui true
 
 ENTRYPOINT ["/bin/bash"]
